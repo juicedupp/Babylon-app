@@ -3,86 +3,92 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Babylon Inc Portal</title>
+    <title>Babylon Monolith</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        :root { --gold: #d4af37; --bg: #0a0a0a; --card: #141414; }
-        body { background: var(--bg); color: #fff; font-family: sans-serif; margin: 0; padding: 0; text-align: center; }
+        :root { --obsidian: #050505; --pearl: #fdfdfd; --dim: #121212; --accent: #d4af37; }
+        body { background: var(--obsidian); color: var(--pearl); font-family: 'Inter', sans-serif; margin: 0; padding: 20px; }
         
-        /* Header */
-        .header { padding: 25px; border-bottom: 1px solid #222; letter-spacing: 4px; font-weight: bold; color: var(--gold); }
+        .header { padding: 20px 0; border-bottom: 1px solid #222; margin-bottom: 25px; }
+        .brand { font-size: 10px; letter-spacing: 5px; color: #666; text-transform: uppercase; }
         
-        /* Dashboard Container */
-        .container { padding: 20px; }
+        /* Portfolio Section */
+        .equity-box { margin-bottom: 30px; }
+        .label { font-size: 11px; color: #555; text-transform: uppercase; letter-spacing: 2px; }
+        .amount { font-size: 42px; font-weight: 200; margin: 10px 0; }
         
-        /* Feature Cards */
-        .card { background: var(--card); border: 1px solid #222; border-radius: 12px; padding: 15px; margin-bottom: 15px; text-align: left; display: flex; align-items: center; }
-        .card-icon { font-size: 24px; margin-right: 15px; }
-        .card-info h3 { margin: 0; font-size: 14px; color: var(--gold); text-transform: uppercase; }
-        .card-info p { margin: 5px 0 0; font-size: 12px; color: #888; }
+        /* Pool Stakes */
+        .pool-row { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid #1a1a1a; }
+        .pool-name { font-size: 14px; font-weight: 500; }
+        .pool-percentage { font-size: 12px; color: var(--accent); font-family: monospace; }
 
-        /* Action Button */
-        .btn-main { background: var(--gold); color: #000; border: none; width: 90%; padding: 15px; border-radius: 8px; font-weight: bold; position: fixed; bottom: 20px; left: 5%; }
+        /* Action Buttons */
+        .action-container { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 30px; }
+        .btn { padding: 15px; border-radius: 4px; border: 1px solid var(--pearl); font-size: 12px; font-weight: bold; text-transform: uppercase; cursor: pointer; transition: 0.3s; }
+        .btn-deposit { background: var(--pearl); color: var(--obsidian); }
+        .btn-withdraw { background: transparent; color: var(--pearl); }
     </style>
 </head>
 <body>
 
-    <div class="header">BABYLON INC</div>
-
-    <div class="container">
-        <p style="font-size: 13px; color: #aaa; margin-bottom: 25px;">Institutional-Grade Management</p>
-
-        <div class="card" onclick="tg.showAlert('Performance: +12.4% this quarter')">
-            <div class="card-icon">📈</div>
-            <div class="card-info">
-                <h3>Track Performance</h3>
-                <p>Real-time holding updates</p>
-            </div>
-        </div>
-
-        <div class="card" onclick="tg.showAlert('Capital Gateway: Connecting to secure bank...')">
-            <div class="card-icon">💰</div>
-            <div class="card-info">
-                <h3>Invest Capital</h3>
-                <p>Add to your portfolio</p>
-            </div>
-        </div>
-
-        <div class="card" onclick="tg.showAlert('Your March Report is ready for download.')">
-            <div class="card-icon">📑</div>
-            <div class="card-info">
-                <h3>Reports</h3>
-                <p>Monthly & Quarterly statements</p>
-            </div>
-        </div>
-
-        <div class="card" onclick="tg.showAlert('Alerts: Notifications are active.')">
-            <div class="card-icon">📱</div>
-            <div class="card-info">
-                <h3>Market Alerts</h3>
-                <p>Instant market move updates</p>
-            </div>
-        </div>
+    <div class="header">
+        <div class="brand">Babylon Inc. / Monolith</div>
     </div>
 
-    <button class="btn-main" onclick="verify()">VERIFY PORTAL ACCESS</button>
+    <div class="equity-box">
+        <div class="label">Total Equity</div>
+        <div class="amount" id="total-equity">$0.00</div>
+        <div style="font-size: 10px; color: #00ff41;">+0.068% Daily Accrual Active</div>
+    </div>
+
+    <div class="label">Your Pro-Rata Stakes</div>
+    
+    <div class="pool-row">
+        <div class="pool-name">Gold Monolith</div>
+        <div class="pool-percentage" id="gold-stake">0.000%</div>
+    </div>
+    <div class="pool-row">
+        <div class="pool-name">Platinum Vault</div>
+        <div class="pool-percentage" id="platinum-stake">0.000%</div>
+    </div>
+
+    <div class="action-container">
+        <button class="btn btn-deposit" onclick="triggerHITL('DEPOSIT')">Request Deposit</button>
+        <button class="btn btn-withdraw" onclick="triggerHITL('WITHDRAWAL')">Request Payout</button>
+    </div>
 
     <script>
         const tg = window.Telegram.WebApp;
         tg.ready();
         tg.expand();
-        tg.enableClosingConfirmation();
+        tg.setHeaderColor('#050505');
 
-        // Sets the header color in the Telegram App itself
-        tg.setHeaderColor('#0a0a0a');
+        // Initial Data (This will eventually come from your Motoko Canister)
+        let userPrincipal = 5000; 
+        let poolGoldLiquidity = 21000000;
 
-        function verify() {
-            tg.showConfirm("Are you sure you want to request verification?", (confirmed) => {
-                if (confirmed) {
-                    tg.sendData("Client Verified: " + tg.initDataUnsafe.user.first_name);
+        function updateDashboard() {
+            // Calculate Percentage Stake
+            let stake = (userPrincipal / poolGoldLiquidity) * 100;
+            document.getElementById('gold-stake').innerText = stake.toFixed(5) + "%";
+            document.getElementById('total-equity').innerText = "$" + userPrincipal.toLocaleString();
+        }
+
+        function triggerHITL(type) {
+            tg.showConfirm(`Initiate Concierge ${type} Request?`, (ok) => {
+                if(ok) {
+                    tg.sendData(JSON.stringify({
+                        protocol: "HITL_GATEWAY",
+                        action: type,
+                        user: tg.initDataUnsafe.user?.username || "Guest",
+                        timestamp: Date.now()
+                    }));
+                    tg.showAlert(`Admin Handshake Required: Your request for ${type} has been sent to the Babylon Admin Gate for manual verification.`);
                 }
             });
         }
+
+        updateDashboard();
     </script>
 </body>
 </html>
