@@ -3,64 +3,85 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Babylon Inc</title>
+    <title>Babylon Inc Portal</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        body {
-            background-color: #000; /* Minimalist Black */
-            color: #fff;
-            font-family: sans-serif;
-            text-align: center;
-            padding: 20px;
-        }
-        .header {
-            border: 1px solid #333;
-            padding: 20px;
-            margin-bottom: 30px;
-            letter-spacing: 4px;
-            text-transform: uppercase;
-        }
-        .card {
-            background: #111;
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 15px;
-            border: 1px solid #222;
-        }
-        .btn {
-            background: #fff;
-            color: #000;
-            border: none;
-            padding: 15px 30px;
-            border-radius: 5px;
-            font-weight: bold;
-            width: 100%;
-        }
+        :root { --gold: #d4af37; --bg: #0a0a0a; --card: #141414; }
+        body { background: var(--bg); color: #fff; font-family: sans-serif; margin: 0; padding: 0; text-align: center; }
+        
+        /* Header */
+        .header { padding: 25px; border-bottom: 1px solid #222; letter-spacing: 4px; font-weight: bold; color: var(--gold); }
+        
+        /* Dashboard Container */
+        .container { padding: 20px; }
+        
+        /* Feature Cards */
+        .card { background: var(--card); border: 1px solid #222; border-radius: 12px; padding: 15px; margin-bottom: 15px; text-align: left; display: flex; align-items: center; }
+        .card-icon { font-size: 24px; margin-right: 15px; }
+        .card-info h3 { margin: 0; font-size: 14px; color: var(--gold); text-transform: uppercase; }
+        .card-info p { margin: 5px 0 0; font-size: 12px; color: #888; }
+
+        /* Action Button */
+        .btn-main { background: var(--gold); color: #000; border: none; width: 90%; padding: 15px; border-radius: 8px; font-weight: bold; position: fixed; bottom: 20px; left: 5%; }
     </style>
 </head>
 <body>
+
     <div class="header">BABYLON INC</div>
-    
-    <div class="card">
-        <p>INVESTMENT PORTAL</p>
-        <h2 id="user-name">Welcome, Client</h2>
+
+    <div class="container">
+        <p style="font-size: 13px; color: #aaa; margin-bottom: 25px;">Institutional-Grade Management</p>
+
+        <div class="card" onclick="tg.showAlert('Performance: +12.4% this quarter')">
+            <div class="card-icon">📈</div>
+            <div class="card-info">
+                <h3>Track Performance</h3>
+                <p>Real-time holding updates</p>
+            </div>
+        </div>
+
+        <div class="card" onclick="tg.showAlert('Capital Gateway: Connecting to secure bank...')">
+            <div class="card-icon">💰</div>
+            <div class="card-info">
+                <h3>Invest Capital</h3>
+                <p>Add to your portfolio</p>
+            </div>
+        </div>
+
+        <div class="card" onclick="tg.showAlert('Your March Report is ready for download.')">
+            <div class="card-icon">📑</div>
+            <div class="card-info">
+                <h3>Reports</h3>
+                <p>Monthly & Quarterly statements</p>
+            </div>
+        </div>
+
+        <div class="card" onclick="tg.showAlert('Alerts: Notifications are active.')">
+            <div class="card-icon">📱</div>
+            <div class="card-info">
+                <h3>Market Alerts</h3>
+                <p>Instant market move updates</p>
+            </div>
+        </div>
     </div>
 
-    <button class="btn" onclick="sendData()">VERIFY ACCOUNT</button>
+    <button class="btn-main" onclick="verify()">VERIFY PORTAL ACCESS</button>
 
     <script>
         const tg = window.Telegram.WebApp;
         tg.ready();
-        tg.expand(); // Opens the app to full height
+        tg.expand();
+        tg.enableClosingConfirmation();
 
-        // Personalize with Telegram User Data
-        if (tg.initDataUnsafe.user) {
-            document.getElementById('user-name').innerText = tg.initDataUnsafe.user.first_name;
-        }
+        // Sets the header color in the Telegram App itself
+        tg.setHeaderColor('#0a0a0a');
 
-        function sendData() {
-            tg.sendData("Verification Request Sent"); // Sends text back to your bot
-            tg.close();
+        function verify() {
+            tg.showConfirm("Are you sure you want to request verification?", (confirmed) => {
+                if (confirmed) {
+                    tg.sendData("Client Verified: " + tg.initDataUnsafe.user.first_name);
+                }
+            });
         }
     </script>
 </body>
