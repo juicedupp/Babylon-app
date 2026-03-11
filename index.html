@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Babylon Inc</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body {
+            background-color: #000; /* Minimalist Black */
+            color: #fff;
+            font-family: sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+        .header {
+            border: 1px solid #333;
+            padding: 20px;
+            margin-bottom: 30px;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+        }
+        .card {
+            background: #111;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border: 1px solid #222;
+        }
+        .btn {
+            background: #fff;
+            color: #000;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 5px;
+            font-weight: bold;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">BABYLON INC</div>
+    
+    <div class="card">
+        <p>INVESTMENT PORTAL</p>
+        <h2 id="user-name">Welcome, Client</h2>
+    </div>
+
+    <button class="btn" onclick="sendData()">VERIFY ACCOUNT</button>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.ready();
+        tg.expand(); // Opens the app to full height
+
+        // Personalize with Telegram User Data
+        if (tg.initDataUnsafe.user) {
+            document.getElementById('user-name').innerText = tg.initDataUnsafe.user.first_name;
+        }
+
+        function sendData() {
+            tg.sendData("Verification Request Sent"); // Sends text back to your bot
+            tg.close();
+        }
+    </script>
+</body>
+</html>
